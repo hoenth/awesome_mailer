@@ -105,13 +105,12 @@ module AwesomeMailer
     end
 
     def head
-      @head ||= document.at('head') || Nokogiri::XML::Node.new('head', document.root).tap do |head|
-        document.root.children.first.add_previous_sibling(head)
-      end
+      @head ||= document.at('head') || 
+                document.root.children.first.add_previous_sibling(Nokogiri::XML::DocumentFragment.parse("<head></head>")).at('head')
     end
 
     def header_stylesheet
-      @header_stylesheet ||= head.at('style[@type="text/css"]') || Nokogiri::XML::Node.new('style', head).tap do |style|
+      @header_stylesheet ||= head.at('style[@type="text/css"]') || Nokogiri::XML::Node.new('style', document).tap do |style|
         style['type'] = 'text/css'
         style.content = "\n"
         head.add_child(style)
