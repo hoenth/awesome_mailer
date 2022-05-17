@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 #require 'simplecov'
 #SimpleCov.start
+require 'rails/all'
+require 'rspec'
 require 'ostruct'
 require 'awesome_mailer'
 require 'pry'
 require 'capybara'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-
-Rails = OpenStruct.new(root: Pathname.new(File.dirname(__FILE__)))
 
 AwesomeMailer::Base.prepend_view_path 'spec/views'
 AwesomeMailer::Base.config.assets_dir = 'spec/assets'
@@ -49,10 +51,8 @@ module AwesomeMailerTestHelper
     assets = AwesomeStruct.new(prefix: '/stylesheets')
     action_mailer = AwesomeStruct.new(asset_host: nil)
     action_controller = AwesomeStruct.new(asset_host: nil)
-    Rails.stub(:application) { AwesomeStruct.new(assets: asset_pipeline) }
-    Rails.stub(:configuration) do
-      AwesomeStruct.new(assets: assets, action_mailer: action_mailer, action_controller: action_controller)
-    end
+    allow(Rails).to receive(:application).and_return(AwesomeStruct.new(assets: asset_pipeline))
+    allow(Rails).to receive(:configuration).and_return(AwesomeStruct.new(assets: assets, action_mailer: action_mailer, action_controller: action_controller))
   end
 
   def load_file_server
@@ -75,8 +75,9 @@ RSpec.configure do |config|
   config.include AwesomeMailerTestHelper
 
   config.before do
-    Rails.stub(:configuration) do
-      AwesomeMailerTestHelper::AwesomeStruct.new
-    end
+    allow(Rails).to receive(:configuration).and_return(AwesomeMailerTestHelper::AwesomeStruct.new)      
+    # since we don't have an environment file, we need to stub Rails.root, as
+    # it is when the environment file is loaded that the root is set.
+    allow(Rails).to receive(:root).and_return(Pathname.new(File.dirname(__FILE__)))
   end
 end

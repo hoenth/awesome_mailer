@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe AwesomeMailer::Base do
   it "renders messages like ActionMailer::Base" do
-    TestMailer.render_template(:basic).should be_instance_of Mail::Message
+    expect(TestMailer.render_template(:basic)).to be_instance_of ActionMailer::MessageDelivery
   end
 
   it "converts bad HTML to good HTML" do
@@ -25,7 +25,7 @@ describe AwesomeMailer::Base do
   end
 
   describe "url rewriting" do
-    before { AwesomeMailer::Base.stub(:default_url_options) { {host: "foo.bar"} } }
+    before { allow(AwesomeMailer::Base).to receive(:default_url_options).and_return({host: "foo.bar"}) } 
 
     subject { render_email(:url_rewriting) }
     it { should have_xpath("//div[@style='background-image: url(\"http://foo.bar/images/baz.jpg\")']", text: "welcome!") }
@@ -54,7 +54,7 @@ describe AwesomeMailer::Base do
   describe "embeding @media queries in the head tag" do
     subject { render_email(:media_queries) }
     it { should have_text("Body text") }
-    it { should have_text(%{\n@media only screen and (min-width: 600px) {\n body { background-color: #f00 }\n}\n@media only screen and (min-width: 320px) {\n body { background-color: #00f }\n}\n}) }
+    it { should have_text(%{@media only screen and (min-width: 600px) {\n  body { background-color: #f00 }\n}\n@media only screen and (min-width: 320px) {\n  body { background-color: #00f }\n}}) }
     it { should have_xpath(%{//body[@style="background-color: #0f0"]}) }
   end
 
