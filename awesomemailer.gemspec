@@ -30,25 +30,16 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.summary = "An ActionMailer extension that embeds CSS inline in e-mails"
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 3
+  s.add_runtime_dependency 'rails', '~> 5.2', '>= 5.2.0'
+  s.add_runtime_dependency 'addressable', '>= 2.0'
+  s.add_runtime_dependency 'css_parser', '>= 1.11.0'
+  s.add_runtime_dependency 'nokogiri', '~> 1.13.3'
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<actionmailer>, [">= 4.0"])
-      s.add_runtime_dependency(%q<addressable>, [">= 0"])
-      s.add_runtime_dependency(%q<css_parser>, [">= 1.2.5"])
-      s.add_runtime_dependency(%q<nokogiri>, ["~> 1.8"])
-    else
-      s.add_dependency(%q<actionmailer>, [">= 4.0"])
-      s.add_dependency(%q<addressable>, [">= 0"])
-      s.add_dependency(%q<css_parser>, [">= 1.2.5"])
-      s.add_dependency(%q<nokogiri>, ["~> 1.8"])
-    end
-  else
-    s.add_dependency(%q<actionmailer>, [">= 4.0"])
-    s.add_dependency(%q<addressable>, [">= 0"])
-    s.add_dependency(%q<css_parser>, [">= 1.2.5"])
-    s.add_dependency(%q<nokogiri>, ["~> 1.8"])
-  end
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'jeweler'
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'capybara'
+  s.add_development_dependency 'simplecov'
 end
 
